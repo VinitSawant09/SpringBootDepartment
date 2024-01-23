@@ -3,6 +3,11 @@ package com.vscode.Springboot.department.controller;
 import com.vscode.Springboot.department.entity.Department;
 import com.vscode.Springboot.department.error.DepartmentNotFoundException;
 import com.vscode.Springboot.department.service.DepartmentService;
+import io.swagger.v3.oas.annotations.Hidden;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@Tag(name = "Department Rest Endpoint")
 public class DepartmentController {
 
     @Autowired
@@ -26,13 +32,15 @@ public class DepartmentController {
     }
 
     @GetMapping("/departments")
+    @Hidden
     public List<Department> fetchDepartmentList(){
         LOGGER.info("Inside fetchDepartmentList of DepartmentController");
         return departmentService.fetchDepartmentList();
     }
 
     @GetMapping("/departments/{id}")
-    public Department fetchDepartmentById(@PathVariable("id") Long departmentId) throws DepartmentNotFoundException {
+    @Operation(summary = "Returns a department", description = "Takes Id  returns single department")
+    public @ApiResponse(description = "Department Object") Department fetchDepartmentById(@Parameter(description = "Id of the department") @PathVariable("id") Long departmentId) throws DepartmentNotFoundException {
          LOGGER.info("Inside fetchDepartmentById of DepartmentController");
          return departmentService.fetchDepartmentById(departmentId);
     }
